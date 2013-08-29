@@ -30,36 +30,32 @@ using namespace xpcc::atmega;
 //  (X-ENABLE) PD6 20|     |21  PD7
 //                   +-----+
 
+// LEDs
+typedef xpcc::GpioInverted<GpioOutputA0> Led7;
+typedef xpcc::GpioInverted<GpioOutputA2> Led5;
+typedef xpcc::GpioInverted<GpioOutputA5> Led2;
+typedef xpcc::GpioInverted<GpioOutputA7> Led0;
+
+typedef xpcc::SoftwareGpioPort<Led7, Led5, Led2, Led0> Leds;
+
 // Stepper motor driver
 typedef GpioOutputD0 Y_Dir;
 typedef GpioOutputD1 Y_Step;
-typedef GpioOutputD2 Y_Enable;
+typedef GpioOpenDrain<GpioD2> Y_Enable;
 
 typedef GpioOutputD4 X_Dir;
 typedef GpioOutputD5 X_Step;
-typedef GpioOutputD6 X_Enable;
+typedef GpioOpenDrain<GpioD6> X_Enable;
+
+#include "motor.hpp"
+xpcc::A4988<Y_Dir, Y_Step, 400*4> Y_Motor;
+xpcc::A4988<X_Dir, X_Step, 400*4> X_Motor;
 
 // I2C compass driver
 #include <xpcc/driver/inertial/hmc6343.hpp>
 typedef I2cMaster Twi;
 uint8_t hmcData[20];
 xpcc::Hmc6343<Twi> compass(hmcData);
-
-// Serial debug
-#include <xpcc/io/iodevice_wrapper.hpp>
-typedef Uart0 Uart;
-xpcc::IODeviceWrapper<Uart> logger;
-
-#include <xpcc/debug/logger.hpp>
-xpcc::log::Logger xpcc::log::debug(logger);
-xpcc::log::Logger xpcc::log::info(logger);
-xpcc::log::Logger xpcc::log::warning(logger);
-xpcc::log::Logger xpcc::log::error(logger);
-
-#undef	XPCC_LOG_LEVEL
-//#define	XPCC_LOG_LEVEL xpcc::log::DEBUG
-#define	XPCC_LOG_LEVEL xpcc::log::DISABLED
-
 
 // INTERRUPTS #################################################################
 ISR(TIMER0_COMPA_vect)
@@ -80,20 +76,31 @@ MAIN_FUNCTION // ##############################################################
 	// Enable Overflow Interrupt
 	TIMSK0 = (1 << OCIE0A);
 
+	Leds::setOutput();
+	Leds::write(0);
+
+	Y_Dir::setOutput(xpcc::Gpio::LOW);
+	Y_Step::setOutput(xpcc::Gpio::LOW);
+	Y_Enable::set();
+
+	X_Dir::setOutput(xpcc::Gpio::LOW);
+	X_Step::setOutput(xpcc::Gpio::LOW);
+	X_Enable::set();
+
 	GpioC0::connect(Twi::Scl);
 	GpioC1::connect(Twi::Sda);
-	Twi::initialize<>();
+	Twi::initialize<Twi::DataRate::Fast>();
 
-	GpioD0::connect(Uart::Rx);
-	GpioD1::connect(Uart::Tx);
-	Uart::initialize<38400>();
-
-	XPCC_LOG_INFO << "\n\nRESTART\n\n";
 	xpcc::atmega::enableInterrupts();
+
+	Y_Enable::reset();
+	X_Enable::reset();
+
+	Y_Motor.rotateBy(360, 1000);
 
 	while (1)
 	{
-
+		Y_Motor.run();
 	}
 
 	return 0;
