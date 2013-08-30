@@ -11,6 +11,7 @@
 #define XPCC_A4988_HPP
 
 #include <xpcc/architecture/utils.hpp>
+#include <xpcc/processing.hpp>
 
 namespace xpcc
 {
