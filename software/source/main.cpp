@@ -19,13 +19,13 @@ ISR(TIMER0_COMPA_vect)
 
 MAIN_FUNCTION // ##############################################################
 {
-	// Initiate 10kHz interrupt for clock using timer0
+	// Initiate 1kHz interrupt for clock using timer0
 	// Clear Timer on Compare Match (CTC) Mode
 	TCCR0A = (1 << WGM01);
-	// 1kHz (= 20000kHz / 64 / 250)
-	OCR0A = 156;
-	// Prescaler 8, enable Timer0
-	TCCR0B = (1 << CS01) | (1 << CS00);
+	// 1kHz (= 20000kHz / 256 / 78)
+	OCR0A = 78;
+	// Prescaler 256, enable Timer0
+	TCCR0B = (1 << CS02);
 	// Enable Overflow Interrupt
 	TIMSK0 = (1 << OCIE0A);
 

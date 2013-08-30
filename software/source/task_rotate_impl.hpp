@@ -35,12 +35,12 @@ task::Rotate::run()
 
 //	PT_WAIT_UNTIL(compass.enterUserCalibrationMode());
 
-	yMotor.rotateBy(360, 10000);
+	yMotor.rotateBy(360, 7500);
 
 	PT_WAIT_UNTIL(!yMotor.isRunning());
 
 	Leds::write(0b1100);
-	zMotor.rotateBy(360, 10000);
+	zMotor.rotateBy(360, 7500);
 
 	PT_WAIT_UNTIL(!zMotor.isRunning());
 
