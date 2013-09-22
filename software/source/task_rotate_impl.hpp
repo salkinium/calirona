@@ -1,4 +1,4 @@
-
+// coding: utf-8
 #ifndef TASK_ROTATE_HPP
 #	error	"Don't include this file directly, use 'task_rotate.hpp' instead!"
 #endif
@@ -7,12 +7,28 @@ void
 task::Rotate::start()
 {
 	this->restart();
+	Leds::write(0);
 }
 
 bool
 task::Rotate::isFinished()
 {
-	return (!this->isRunning() );
+	return (!this->isRunning());
+}
+
+void
+task::Rotate::stopMotors()
+{
+	this->stop();
+}
+
+void
+task::Rotate::releaseMotors()
+{
+	this->stop();
+	Y_Enable::set();
+	Z_Enable::set();
+	Leds::write(0);
 }
 
 void
@@ -35,7 +51,7 @@ task::Rotate::run()
 
 //	PT_WAIT_UNTIL(compass.enterUserCalibrationMode());
 
-	yMotor.rotateBy(360, 7500);
+	yMotor.rotateBy(-360, 7500);
 
 	PT_WAIT_UNTIL(!yMotor.isRunning());
 
@@ -53,7 +69,7 @@ task::Rotate::run()
 	PT_WAIT_UNTIL(!zMotor.isRunning());
 
 	Leds::write(0b0011);
-	yMotor.rotateBy(-360, 2000);
+	yMotor.rotateBy(360, 2000);
 
 	PT_WAIT_UNTIL(!yMotor.isRunning());
 
@@ -62,5 +78,6 @@ task::Rotate::run()
 	Y_Enable::set();
 	Z_Enable::set();
 
-	PT_END();	// return in included in PT_END();
+	// return is included in PT_END();
+	PT_END();
 }

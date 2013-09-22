@@ -6,18 +6,23 @@
 
 using namespace xpcc::atmega;
 
-// Task
-#include "task_rotate.hpp"
-task::Rotate rotate;
-
 // INTERRUPTS #################################################################
 ISR(TIMER0_COMPA_vect)
 {
 	xpcc::Clock::increment();
+
+	static uint8_t count(10);
+	if (!count--)
+	{
+		count = 10;
+		uint8_t mask = (StartButton::read() ? BUTTON_START : 0);
+		mask |= (StopButton::read() ? BUTTON_STOP : 0);
+		buttons.update(mask);
+	}
 }
 
-
-MAIN_FUNCTION // ##############################################################
+int
+main(void)
 {
 	// Initiate 1kHz interrupt for clock using timer0
 	// Clear Timer on Compare Match (CTC) Mode
@@ -31,6 +36,9 @@ MAIN_FUNCTION // ##############################################################
 
 	Leds::setOutput();
 	Leds::write(0);
+
+	StartButton::setInput(Gpio::Configuration::PullUp);
+	StopButton::setInput(Gpio::Configuration::PullUp);
 
 	Y_Dir::setOutput(xpcc::Gpio::LOW);
 	Y_Step::setOutput(xpcc::Gpio::LOW);
@@ -46,11 +54,9 @@ MAIN_FUNCTION // ##############################################################
 
 	xpcc::atmega::enableInterrupts();
 
-	rotate.start();
-
 	while (1)
 	{
-		rotate.update();
+		manager.update();
 	}
 
 	return 0;

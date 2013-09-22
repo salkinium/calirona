@@ -18,6 +18,12 @@ public:
 	isFinished();
 
 	void
+	stopMotors();
+
+	void
+	releaseMotors();
+
+	void
 	update();
 
 private:
