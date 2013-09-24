@@ -6,6 +6,9 @@
 
 using namespace xpcc::atmega;
 
+#undef	XPCC_LOG_LEVEL
+#define	XPCC_LOG_LEVEL xpcc::log::DEBUG
+
 // INTERRUPTS #################################################################
 ISR(TIMER0_COMPA_vect)
 {
@@ -48,11 +51,19 @@ main(void)
 	Z_Step::setOutput(xpcc::Gpio::LOW);
 	Z_Enable::set();
 
-	GpioC0::connect(Twi::Scl);
-	GpioC1::connect(Twi::Sda);
-	Twi::initialize<Twi::DataRate::Fast>();
+	Scl::connect(Twi::Scl);
+	Sda::connect(Twi::Sda);
+	Scl::configure(Gpio::Configuration::PullUp);
+	Sda::configure(Gpio::Configuration::PullUp);
+	Twi::initialize<Twi::DataRate::Standard>();
+
+	GpioD0::connect(Uart::Rx);
+	GpioD1::connect(Uart::Tx);
+	Uart::initialize<19200>();
 
 	xpcc::atmega::enableInterrupts();
+
+	XPCC_LOG_INFO << "\nRESTART\n" << xpcc::endl;
 
 	while (1)
 	{

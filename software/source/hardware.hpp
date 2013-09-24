@@ -9,10 +9,10 @@ using namespace xpcc::atmega;
 // ATMEL ATMEGA644
 //                   +--v--+
 //             PB0  1|     |40  PA0 (LED7)
-//             PB1  2|     |39  PA1 (START)
+//             PB1  2|     |39  PA1
 //             PB2  3|     |38  PA2 (LED5)
-//             PB3  4|     |37  PA3 (STOP)
-//             PB4  5|     |36  PA4
+//             PB3  4|     |37  PA3 (START)
+//             PB4  5|     |36  PA4 (STOP)
 //    (P-MOSI) PB5  6|     |35  PA5 (LED2)
 //    (P-MISO) PB6  7|     |34  PA6
 //     (P-SCK) PB8  8|     |33  PA7 (LED0)
@@ -40,8 +40,8 @@ typedef xpcc::SoftwareGpioPort< Led7, Led5, Led2, Led0 > Leds;
 
 // Buttons
 #include <xpcc/ui/button_group.hpp>
-typedef GpioInputA1 StartButton;
-typedef GpioInputA3 StopButton;
+typedef GpioInputA3 StartButton;
+typedef GpioInputA4 StopButton;
 enum
 {
 	BUTTON_START = 0x01,
@@ -65,10 +65,26 @@ xpcc::A4988< Z_Dir, Z_Step, 400*4 > zMotor;
 // I2C compass driver
 #include <xpcc/driver/inertial/hmc6343.hpp>
 typedef I2cMaster Twi;
+typedef GpioC0 Scl;
+typedef GpioC1 Sda;
 uint8_t hmcData[20];
 xpcc::Hmc6343<Twi> compass(hmcData);
 
-// Task
+// Serial debug
+#include <xpcc/io/iodevice_wrapper.hpp>
+typedef Uart0 Uart;
+xpcc::IODeviceWrapper<Uart> logger;
+
+#include <xpcc/debug/logger.hpp>
+xpcc::log::Logger xpcc::log::debug(logger);
+xpcc::log::Logger xpcc::log::info(logger);
+xpcc::log::Logger xpcc::log::warning(logger);
+xpcc::log::Logger xpcc::log::error(logger);
+
+#undef	XPCC_LOG_LEVEL
+#define	XPCC_LOG_LEVEL xpcc::log::DEBUG
+
+// Tasks
 #include "task_rotate.hpp"
 task::Rotate rotate;
 

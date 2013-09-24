@@ -11,11 +11,16 @@ namespace task
 class Rotate : private xpcc::pt::Protothread
 {
 public:
+	Rotate();
+
 	void
 	start();
 
 	bool
 	isFinished();
+
+	bool
+	isSuccessful();
 
 	void
 	stopMotors();
@@ -29,6 +34,9 @@ public:
 private:
 	bool
 	run();
+
+	xpcc::Timeout<> i2cTimeout;
+	bool success;
 };
 
 } // namespace task

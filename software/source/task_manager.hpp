@@ -24,6 +24,7 @@ private:
 	// 1s timeout
 	xpcc::PeriodicTimer<> timer;
 	int16_t motorTimeout;
+	bool ledsOn;
 };
 
 } // namespace task
