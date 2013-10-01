@@ -21,10 +21,10 @@ using namespace xpcc::atmega;
 //             GND 11|     |30  AVCC
 //           XTAL2 12|     |29  PC7
 //           XTAL1 13|     |28  PC6
-// (RXD,Z-DIR) PD0 14|     |27  PC5
-//(TXD,Z-STEP) PD1 15|     |26  PC4
-//  (Z-ENABLE) PD2 16|     |25  PC3
-//             PD3 17|     |24  PC2
+//       (RXD) PD0 14|     |27  PC5
+//       (TXD) PD1 15|     |26  PC4
+//  (Z-ENABLE) PD2 16|     |25  PC3 (Z-DIR)
+//             PD3 17|     |24  PC2 (Z-STEP)
 //     (Y-DIR) PD4 18|     |23  PC1 (SDA)
 //    (Y-STEP) PD5 19|     |22  PC0 (SCL)
 //  (Y-ENABLE) PD6 20|     |21  PD7
@@ -50,13 +50,13 @@ enum
 xpcc::ButtonGroup<> buttons(BUTTON_START | BUTTON_STOP);
 
 // Stepper motor driver
-typedef GpioOutputD0 Z_Dir;
-typedef GpioOutputD1 Z_Step;
-typedef GpioOpenDrain< GpioD2 > Z_Enable;
+typedef GpioOutputC3 Y_Dir;
+typedef GpioOutputC2 Y_Step;
+typedef GpioOpenDrain< GpioD2 > Y_Enable;
 
-typedef GpioOutputD4 Y_Dir;
-typedef GpioOutputD5 Y_Step;
-typedef GpioOpenDrain< GpioD6 > Y_Enable;
+typedef GpioOutputD4 Z_Dir;
+typedef GpioOutputD5 Z_Step;
+typedef GpioOpenDrain< GpioD6 > Z_Enable;
 
 #include "motor.hpp"
 xpcc::A4988< Y_Dir, Y_Step, 400*4 > yMotor;
@@ -64,9 +64,14 @@ xpcc::A4988< Z_Dir, Z_Step, 400*4 > zMotor;
 
 // I2C compass driver
 #include <xpcc/driver/inertial/hmc6343.hpp>
+//*
 typedef I2cMaster Twi;
 typedef GpioC0 Scl;
 typedef GpioC1 Sda;
+/*/
+typedef GpioOpenDrain< GpioC0 > Scl;
+typedef GpioOpenDrain< GpioC1 > Sda;
+typedef xpcc::SoftwareI2cMaster<Scl, Sda> Twi;//*/
 uint8_t hmcData[20];
 xpcc::Hmc6343<Twi> compass(hmcData);
 

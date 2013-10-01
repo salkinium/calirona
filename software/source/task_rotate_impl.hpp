@@ -32,6 +32,8 @@ void
 task::Rotate::stopMotors()
 {
 	this->stop();
+	yMotor.stop();
+	zMotor.stop();
 	Leds::write(0b1100);
 	XPCC_LOG_DEBUG << "Rotate::stopMotors()" << xpcc::endl;
 }
@@ -40,6 +42,8 @@ void
 task::Rotate::releaseMotors()
 {
 	this->stop();
+	yMotor.stop();
+	zMotor.stop();
 	Y_Enable::set();
 	Z_Enable::set();
 	Leds::write(0);

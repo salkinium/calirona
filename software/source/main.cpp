@@ -59,7 +59,7 @@ main(void)
 
 	GpioD0::connect(Uart::Rx);
 	GpioD1::connect(Uart::Tx);
-	Uart::initialize<19200>();
+	Uart::initialize<Uart::B19200>();
 
 	xpcc::atmega::enableInterrupts();
 
