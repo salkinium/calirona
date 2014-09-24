@@ -1,99 +1,110 @@
 // coding: utf-8
-#ifndef HARDWARE_HPP
-#define HARDWARE_HPP
+/* Copyright (c) 2014, Niklas Hauser
+* All Rights Reserved.
+*/
+// ----------------------------------------------------------------------------
+
+#ifndef CALIRONA_HARDWARE
+#define CALIRONA_HARDWARE
 
 #include <xpcc/architecture/platform.hpp>
+
 using namespace xpcc::atmega;
 
 // IO #########################################################################
-// ATMEL ATMEGA644
-//                   +--v--+
-//             PB0  1|     |40  PA0 (LED7)
-//             PB1  2|     |39  PA1
-//             PB2  3|     |38  PA2 (LED5)
-//             PB3  4|     |37  PA3 (START)
-//             PB4  5|     |36  PA4 (STOP)
-//    (P-MOSI) PB5  6|     |35  PA5 (LED2)
-//    (P-MISO) PB6  7|     |34  PA6
-//     (P-SCK) PB8  8|     |33  PA7 (LED0)
-//          !RESET  9|     |32  AREF
-//             VCC 10|     |31  GND
-//             GND 11|     |30  AVCC
-//           XTAL2 12|     |29  PC7
-//           XTAL1 13|     |28  PC6
-//       (RXD) PD0 14|     |27  PC5
-//       (TXD) PD1 15|     |26  PC4
-//  (Z-ENABLE) PD2 16|     |25  PC3 (Z-DIR)
-//             PD3 17|     |24  PC2 (Z-STEP)
-//     (Y-DIR) PD4 18|     |23  PC1 (SDA)
-//    (Y-STEP) PD5 19|     |22  PC0 (SCL)
-//  (Y-ENABLE) PD6 20|     |21  PD7
-//                   +-----+
+// ATMEL ATMEGA328P
+//                     +-v-+
+//      (!RESET) PC6  1|   |28  PC5 (SCL)
+//         (RXD) PD0  2|   |27  PC4 (SDA)
+//         (TXD) PD1  3|   |26  PC3 (!HEADPHONE)
+//    (X_LIMIT1) PD2  4|   |25  PC2 (!MECH_ERROR)
+//    (X_LIMIT2) PD3  5|   |24  PC1 (!BUSY2)
+//    (Z_LIMIT1) PD4  6|   |23  PC0 (!BUSY1)
+//               VCC  7|   |22  GND
+//               GND  8|   |21  AREF
+//       (XTAL1) PB6  9|   |20  AVCC
+//       (XTAL2) PB7 10|   |19  PB5 (SCK)
+//    (Z_LIMIT2) PD5 11|   |18  PB4 (!START/MISO)
+// (Z_STEP/OC0A) PD6 12|   |17  PB3 (!STOP/MOSI)
+//     (!ENABLE) PD7 13|   |16  PB2 (Z_DIR)
+//       (X_DIR) PB0 14|   |15  PB1 (X_STEP/OC1A)
+//                     +---+
+
+typedef xpcc::avr::SystemClock systemClock;
+
+// Motors
+//typedef xpcc::GpioInverted< GpioOpenDrainWithPullUp< GpioD7 > > XZ_Enable;
+typedef xpcc::GpioInverted< GpioD7 > XZ_Enable;
+
+// X-Axis
+typedef GpioInputD2 X_Limit1;
+typedef GpioInputD3 X_Limit2;
+typedef GpioOutputB0 X_Dir;
+typedef GpioOutputB1 X_Step;
+
+// Z-Axis
+typedef GpioInputD4 Z_Limit1;
+typedef GpioInputD5 Z_Limit2;
+typedef GpioOutputB2 Z_Dir;
+typedef GpioOutputD6 Z_Step;
 
 // LEDs
-typedef xpcc::GpioInverted< GpioOutputA0 > Led7;
-typedef xpcc::GpioInverted< GpioOutputA2 > Led5;
-typedef xpcc::GpioInverted< GpioOutputA5 > Led2;
-typedef xpcc::GpioInverted< GpioOutputA7 > Led0;
-
-typedef xpcc::SoftwareGpioPort< Led7, Led5, Led2, Led0 > Leds;
+typedef xpcc::GpioInverted< GpioOutputC0 > LED_Busy1;
+typedef xpcc::GpioInverted< GpioOutputC1 > LED_Busy2;
+typedef xpcc::GpioInverted< GpioOutputC2 > LED_Headphone;
+typedef xpcc::GpioInverted< GpioOutputC3 > LED_MechError;
 
 // Buttons
-#include <xpcc/ui/button_group.hpp>
-typedef GpioInputA3 StartButton;
-typedef GpioInputA4 StopButton;
-enum
-{
-	BUTTON_START = 0x01,
-	BUTTON_STOP = 0x02,
-};
-xpcc::ButtonGroup<> buttons(BUTTON_START | BUTTON_STOP);
+typedef GpioInputB4 ButtonStart;
+typedef GpioInputB3 ButtonStop;
 
-// Stepper motor driver
-typedef GpioOutputC3 Y_Dir;
-typedef GpioOutputC2 Y_Step;
-typedef GpioOpenDrain< GpioD2 > Y_Enable;
-
-typedef GpioOutputD4 Z_Dir;
-typedef GpioOutputD5 Z_Step;
-typedef GpioOpenDrain< GpioD6 > Z_Enable;
-
-#include "motor.hpp"
-xpcc::A4988< Y_Dir, Y_Step, 400*4 > yMotor;
-xpcc::A4988< Z_Dir, Z_Step, 400*4 > zMotor;
-
-// I2C compass driver
-#include <xpcc/driver/inertial/hmc6343.hpp>
-//*
+// COMMUNICATION ##############################################################
+typedef GpioC4 Sda;
+typedef GpioC5 Scl;
 typedef I2cMaster Twi;
-typedef GpioC0 Scl;
-typedef GpioC1 Sda;
-/*/
-typedef GpioOpenDrain< GpioC0 > Scl;
-typedef GpioOpenDrain< GpioC1 > Sda;
-typedef xpcc::SoftwareI2cMaster<Scl, Sda> Twi;//*/
-uint8_t hmcData[20];
-xpcc::Hmc6343<Twi> compass(hmcData);
 
-// Serial debug
+// SERIAL DEBUG ###############################################################
 #include <xpcc/io/iodevice_wrapper.hpp>
 typedef Uart0 Uart;
-xpcc::IODeviceWrapper<Uart> logger;
+xpcc::IODeviceWrapper<Uart> outputDevice;
 
+#include <xpcc/debug/logger/style_wrapper.hpp>
+#include <xpcc/debug/logger/style/prefix.hpp>
 #include <xpcc/debug/logger.hpp>
-xpcc::log::Logger xpcc::log::debug(logger);
-xpcc::log::Logger xpcc::log::info(logger);
-xpcc::log::Logger xpcc::log::warning(logger);
-xpcc::log::Logger xpcc::log::error(logger);
+xpcc::log::StyleWrapper< xpcc::log::Prefix< char[10] > > loggerDeviceDebug (
+		xpcc::log::Prefix< char[10] > ("Debug:   ", outputDevice ) );
+xpcc::log::Logger xpcc::log::debug( loggerDeviceDebug );
+
+xpcc::log::StyleWrapper< xpcc::log::Prefix< char[10] > > loggerDeviceInfo (
+		xpcc::log::Prefix< char[10] > ("Info:    ", outputDevice ) );
+xpcc::log::Logger xpcc::log::info( loggerDeviceInfo );
+
+xpcc::log::StyleWrapper< xpcc::log::Prefix< char[10] > > loggerDeviceWarning (
+		xpcc::log::Prefix< char[10] > ("Warning: ", outputDevice ) );
+xpcc::log::Logger xpcc::log::warning( loggerDeviceWarning );
+
+xpcc::log::StyleWrapper< xpcc::log::Prefix< char[10] > > loggerDeviceError (
+		xpcc::log::Prefix< char[10] > ("Error    ", outputDevice ) );
+xpcc::log::Logger xpcc::log::error( loggerDeviceError );
 
 #undef	XPCC_LOG_LEVEL
 #define	XPCC_LOG_LEVEL xpcc::log::DEBUG
 
-// Tasks
-#include "task_rotate.hpp"
-task::Rotate rotate;
+// TASKS ######################################################################
+#include "tasks/task_buttons.hpp"
+task::Buttons buttons;
+#include "tasks/task_leds.hpp"
+task::Leds leds;
 
-#include "task_manager.hpp"
-task::Manager manager;
+#include "tasks/task_headphone.hpp"
+task::Headphone headphone(leds);
 
-#endif // HARDWARE_HPP
+#include "tasks/task_mechanics.hpp"
+task::Mechanics mechanics(leds, buttons);
+
+#include "tasks/task_manager.hpp"
+task::Manager manager(buttons, headphone, mechanics);
+
+
+
+#endif // CALIRONA_HARDWARE

@@ -12,14 +12,37 @@ namespace task
 class Manager : private xpcc::pt::Protothread
 {
 public:
-	Manager();
+	Manager(Buttons &buttons, Headphone &headphone, Mechanics &mechanics);
+
+	void
+	initialize();
 
 	void
 	update();
 
+	void
+	stopMotors()
+	{
+		Protothread::restart();
+		mechanics.stopMotors();
+		buttons.isStartPressed();
+	}
+
+	void
+	releaseMotors()
+	{
+		Protothread::restart();
+		mechanics.releaseMotors();
+		buttons.isStartPressed();
+	}
+
 private:
 	bool
 	run();
+
+	Buttons &buttons;
+	Headphone &headphone;
+	Mechanics &mechanics;
 
 	// 1s timeout
 	xpcc::PeriodicTimer<> timer;
