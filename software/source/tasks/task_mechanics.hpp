@@ -50,7 +50,7 @@ public:
 
 private:
 	void
-	start();
+	startMotors();
 
 	bool
 	run();
@@ -67,6 +67,7 @@ private:
 
 	Motor< X_Dir, X_Step, 400 * 8 > xMotor;
 	Motor< Z_Dir, Z_Step, 400 * 8 > zMotor;
+	xpcc::Timeout<> motorTimeout;
 };
 
 } // namespace task

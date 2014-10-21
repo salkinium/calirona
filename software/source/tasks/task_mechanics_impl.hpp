@@ -5,7 +5,9 @@
 #endif
 
 task::Mechanics::Mechanics(Leds &leds, Buttons &buttons)
-:	leds(leds), buttons(buttons), correctionX(-15), correctionZ(0),
+:	leds(leds), buttons(buttons),
+	isCalibratedX(false), isCalibratedZ(false),
+	correctionX(-20), correctionZ(13),
 	xMotor(&OCR1AL, &TCCR1B, t1_steps), zMotor(&OCR0A, &TCCR0B, t0_steps),
 	motorTimeout(30000)
 {
@@ -37,24 +39,22 @@ xpcc::co::Result<bool>
 task::Mechanics::calibrateX(void *ctx)
 {
 	CO_BEGIN(ctx);
-	stopMotors();
-	XZ_Enable::set();
-	leds.setBusy();
+	startMotors();
 
 	if (buttons.isX_AxisLimitPressed())
 	{
-		xMotor.rotateBy(100, 1500);
+		xMotor.rotateBy(100, 1000);
 		CO_WAIT_WHILE(xMotor.isRunning());
 	}
 
-	xMotor.setSpeed(-75);
+	xMotor.setSpeed(-100);
 	timeout.restart(18000);
 	CO_WAIT_UNTIL(buttons.isX_AxisLimitPressed() || timeout.isExpired());
 	xMotor.stop();
 
 	if ( (isCalibratedX = !timeout.isExpired()) )
 	{
-		xMotor.rotateBy(correctionX, 300);
+		xMotor.rotateBy(correctionX, 200);
 		CO_WAIT_WHILE(xMotor.isRunning());
 		leds.resetMechanicalError();
 		leds.resetBusy();
@@ -72,9 +72,7 @@ xpcc::co::Result<bool>
 task::Mechanics::calibrateZ(void *ctx)
 {
 	CO_BEGIN(ctx);
-	stopMotors();
-	XZ_Enable::set();
-	leds.setBusy();
+	startMotors();
 
 	zMotor.stop();
 	if (buttons.isZ_AxisLimitPressed())
@@ -84,14 +82,14 @@ task::Mechanics::calibrateZ(void *ctx)
 		zMotor.stop();
 	}
 
-	zMotor.setSpeed(-75);
+	zMotor.setSpeed(-100);
 	timeout.restart(18000);
 	CO_WAIT_UNTIL(buttons.isZ_AxisLimitPressed() || timeout.isExpired());
 
 	zMotor.stop();
 	if ( (isCalibratedZ = !timeout.isExpired()) )
 	{
-		zMotor.rotateBy(correctionZ, 1000);
+		zMotor.rotateBy(correctionZ, 300);
 		CO_WAIT_WHILE(zMotor.isRunning());
 		leds.resetMechanicalError();
 		leds.resetBusy();
@@ -112,7 +110,8 @@ task::Mechanics::rotateForward(void *ctx)
 
 	if (!isCalibrated())
 		CO_RETURN(false);
-	leds.setBusy();
+
+	startMotors();
 
 	xMotor.rotateBy(3600, 10000);
 	CO_WAIT_WHILE(xMotor.isRunning());
@@ -121,6 +120,8 @@ task::Mechanics::rotateForward(void *ctx)
 	CO_WAIT_WHILE(zMotor.isRunning());
 
 	leds.resetBusy();
+	isCalibratedX = false;
+	isCalibratedZ = false;
 	CO_RETURN(true);
 
 	CO_END();
@@ -130,8 +131,7 @@ xpcc::co::Result<bool>
 task::Mechanics::rotateBackward(void *ctx)
 {
 	CO_BEGIN(ctx);
-
-	leds.setBusy();
+	startMotors();
 
 	zMotor.rotateBy(-3600, 10000);
 	CO_WAIT_WHILE(zMotor.isRunning());
@@ -139,10 +139,18 @@ task::Mechanics::rotateBackward(void *ctx)
 	xMotor.rotateBy(-3600, 10000);
 	CO_WAIT_WHILE(xMotor.isRunning());
 
-	leds.resetBusy();
+	releaseMotors();
 	CO_RETURN(true);
 
 	CO_END();
+}
+
+void
+task::Mechanics::startMotors()
+{
+	leds.setBusy();
+	XZ_Enable::set();
+	motorTimeout.restart(30000);
 }
 
 void
@@ -179,9 +187,11 @@ task::Mechanics::run()
 
 	while(true)
 	{
-
-
-
+		if (!xMotor.isRunning() && !zMotor.isRunning() && motorTimeout.isExpired())
+		{
+			stopMotors();
+			XZ_Enable::reset();
+		}
 
 		PT_YIELD();
 	}
