@@ -32,6 +32,10 @@ using namespace xpcc::atmega;
 
 typedef xpcc::avr::SystemClock systemClock;
 
+// motor step counters
+uint16_t t0_steps;
+uint16_t t1_steps;
+
 // Motors
 //typedef xpcc::GpioInverted< GpioOpenDrainWithPullUp< GpioD7 > > XZ_Enable;
 typedef xpcc::GpioInverted< GpioD7 > XZ_Enable;

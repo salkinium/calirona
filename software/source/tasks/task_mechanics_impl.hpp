@@ -6,7 +6,8 @@
 
 task::Mechanics::Mechanics(Leds &leds, Buttons &buttons)
 :	leds(leds), buttons(buttons), correctionX(-15), correctionZ(0),
-	xMotor(&OCR1AL, &TCCR1B), zMotor(&OCR0A, &TCCR0B)
+	xMotor(&OCR1AL, &TCCR1B, t1_steps), zMotor(&OCR0A, &TCCR0B, t0_steps),
+	motorTimeout(30000)
 {
 }
 
@@ -17,11 +18,15 @@ task::Mechanics::initialize()
 	TCCR0A = (1 << COM0A0) | (1 << WGM01);
 	TCCR0B = 0;
 	OCR0A = 0;
+	TIMSK0 = (1 << OCIE0A);
 
 	// setup CTC mode for X axis
 	TCCR1A = (1 << COM1A0);
 	TCCR1B = (1 << WGM12);
 	OCR1A = 0;
+	TIMSK1 = (1 << OCIE1A);
+
+	XZ_Enable::setOutput(xpcc::Gpio::Low);
 
 	releaseMotors();
 	xMotor.initialize();

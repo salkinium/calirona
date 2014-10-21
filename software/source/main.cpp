@@ -6,6 +6,16 @@ ISR(TIMER2_COMPA_vect)
 	xpcc::Clock::increment();
 }
 
+ISR(TIMER0_COMPA_vect)
+{
+	t0_steps++;
+}
+
+ISR(TIMER1_COMPA_vect)
+{
+	t1_steps++;
+}
+
 MAIN_FUNCTION
 {
 	// Initiate 1kHz interrupt for clock using Timer2

@@ -14,6 +14,9 @@
 #include <xpcc/processing/timeout.hpp>
 #include <xpcc/debug/logger.hpp>
 
+#undef	XPCC_LOG_LEVEL
+#define	XPCC_LOG_LEVEL xpcc::log::INFO
+
 namespace task
 {
 
@@ -26,10 +29,11 @@ template< typename Direction, typename Step, uint16_t MotorSteps >
 class Motor
 {
 public:
-	Motor(volatile uint8_t *compare, volatile uint8_t *prescalar)
-	:	mode(MODE_OFF), compare(compare), prescalar(prescalar)
+	Motor(volatile uint8_t *compare, volatile uint8_t *prescalar, uint16_t &steps)
+	:	mode(MODE_OFF), compare(compare), prescalar(prescalar), steps(steps)
 	{
 		stopTimer();
+		steps = 0;
 	}
 
 	void
@@ -49,9 +53,9 @@ public:
 	stop()
 	{
 		stopTimer();
-		timer.stop();
 		mode = MODE_OFF;
 		Step::reset();
+		steps = 0;
 	}
 
 	bool inline
@@ -95,10 +99,11 @@ private:
 		MODE_ANGLE = 2
 	};
 	volatile uint8_t mode;
-	xpcc::Timeout<> timer;
+	uint16_t required_steps;
 
 	volatile uint8_t *compare;
 	volatile uint8_t *prescalar;
+	uint16_t &steps;
 };
 
 }	// namespace task
