@@ -8,6 +8,9 @@
 #include <xpcc/debug/logger.hpp>
 #include "hardware.hpp"
 
+#undef	XPCC_LOG_LEVEL
+#define	XPCC_LOG_LEVEL xpcc::log::INFO
+
 namespace task
 {
 

@@ -56,10 +56,12 @@ MAIN_FUNCTION
 		if (buttons.isStopPressedLong())
 		{
 			manager.releaseMotors();
+			XPCC_LOG_INFO << "RELEASE" << xpcc::endl;
 		}
 		else if (buttons.isStopPressedShort())
 		{
 			manager.stopMotors();
+			XPCC_LOG_INFO << "STOP" << xpcc::endl;
 		}
 	}
 
