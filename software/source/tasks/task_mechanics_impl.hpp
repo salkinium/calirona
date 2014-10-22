@@ -47,7 +47,7 @@ task::Mechanics::calibrateX(void *ctx)
 		CO_WAIT_WHILE(xMotor.isRunning());
 	}
 
-	xMotor.setSpeed(-100);
+	xMotor.setSpeed(-200);
 	timeout.restart(18000);
 	CO_WAIT_UNTIL(buttons.isX_AxisLimitPressed() || timeout.isExpired());
 	xMotor.stop();
@@ -82,7 +82,7 @@ task::Mechanics::calibrateZ(void *ctx)
 		zMotor.stop();
 	}
 
-	zMotor.setSpeed(-100);
+	zMotor.setSpeed(-200);
 	timeout.restart(18000);
 	CO_WAIT_UNTIL(buttons.isZ_AxisLimitPressed() || timeout.isExpired());
 
