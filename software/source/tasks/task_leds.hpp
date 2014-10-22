@@ -75,7 +75,7 @@ public:
 	void inline
 	resetHeadphoneError()
 	{
-		LED_Headphone::reset();
+		LED_Headphone::set();
 		isHeadphoneError = false;
 	}
 

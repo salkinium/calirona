@@ -38,7 +38,7 @@ public:
 		CO_BEGIN(this);
 
 		CO_CALL(device.readRegister(this, device.Register::FilterLsb, filter));
-		XPCC_LOG_DEBUG << "IIR Filter= " << filter << xpcc::endl;
+		XPCC_LOG_DEBUG << "\nPrevious IIR Filter= " << filter << xpcc::endl;
 		CO_CALL(device.setIIR_Filter(this, 5));
 
 		CO_CALL(device.readRegister(this, device.Register16::X_Offset, xOffset));
