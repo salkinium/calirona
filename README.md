@@ -13,8 +13,7 @@ This project was designed and manufactured at [The Media Computing Group][i10].
 
 ## Design
 
-The robot can move the headphones around both two axes a full 360°, which are supported using ball bearings.  
-The z-axis uses a dish which holds the headphones.
+The robot can move the headphones around both two axes a full 360°, which are supported using ball bearings. The z-axis uses a dish which holds the headphones.
 
 Since the power and signal lines for the headphones and second axis motor need to be relayed through both axis, the robot cannot rotate infinitely around its axis.  
 Therefore two position switches exist, which allow the robot to rotate its axes into known safe positions before attempting a rotation.  
@@ -25,16 +24,16 @@ The mapping is as follows:
 
 - START: initialize and start the calibration.
 - STOP: stop robot movement (short press), release motors and reset robot (long press)
-- Busy (blue): blinks, when an operation is in progress
-- Headphone Error (orange): blinks, when no headphone is connected, or it is unresponsive (perhaps broken)
-- Mechanical Error (red): blinks, when the robot detected an invalid mechanical state (broken or blocked motor)
+- Busy (blue): blinks, when an operation is in progress, otherwise off
+- Headphone (orange): blinks, when no headphone is connected, or it is unresponsive (perhaps broken), otherwise on
+- Mechanical Error (red): blinks, when the robot detected an invalid mechanical state (broken or blocked motor), otherwise off
 
 ## Usage
 
 The basic usage of the robots is as follows:
 
 1. Plug in the power cord. The green power led should light up and the headphone error led should blink.
-2. Place the headphone into the holder and plug in the headphone jack into it. The headphone error led should stop blinking, unless the headphone is broken.
+2. Place the headphone into the holder and plug in the headphone jack into it. The headphone error led should stop blinking and turn on fully, unless the headphone is broken.
 3. Press START. The robot will initialize its axes.
 4. Press START again. The robot will do two rotations while calibrating the heaphones.
 5. Once the robot stopped moving, unplug the now calibrated headphones and remove them.
@@ -42,7 +41,7 @@ The basic usage of the robots is as follows:
 If the robot detected an invalid state during any of the actions, it will stop moving and blink an error led.
 
 **Press the STOP button anytime to stop the robot from moving!**  
-You may press the STOP button an longer time to reset the robot.
+Pressing the STOP button for a longer time resets the robot.
 
 
 ## Organization

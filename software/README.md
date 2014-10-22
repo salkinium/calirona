@@ -2,8 +2,8 @@
 
 ## Building from source
 
-The sources are compiled using the [XPCC library][xpcc], which is used for
-GPIO, Communication, Processing, Build System and Serial Debugging.  
+The sources are compiled using the [xpcc library][xpcc], which is used for
+GPIO, communication, processing, build system and serial debugging.
 Enter the `source` directory
 
 	$ cd /path/to/calirona/software/source
@@ -17,39 +17,34 @@ To flash the binary onto the microcontroller, execute:
 	$ scons program
 
 
-Installing XPCC
+Installing xpcc
 ---------------
 
-XPCC is provided as a git submodule, to use it run this in the root `corona/` directory:
+xpcc is provided as a git submodule, to use it run this in the root `corona/` directory:
 
 	$ git submodule init
 	$ git submodule update
 
 
-###### To install the XPCC build system on OS X (tested on Lion/Mountain Lion):
+###### To install the xpcc build system on OS X (tested on Mavericks):
 
-1.	Install [Homebrew][]:  
-	`$ ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"`
-2.	Install some dependencies:  
-	`$ brew install scons python`  
+1.	Install [Homebrew][]:
+	`$ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
+2.	Install some dependencies:
+	`$ brew install scons python`
 	`$ pip install lxml jinja2`
-3.	Install the latest version of [avr-libc][avrlibc] and avrdude using Homebrew:  
-	`$ brew tap larsimmisch/avr`  
+3.	Install the latest version of [avr-libc][avrlibc] and avrdude using Homebrew:
+	`$ brew tap larsimmisch/avr`
 	`$ brew install avr-libc avrdude`
-4.	Install the latest version of [arm-none-eabi-gcc][].
 
 
-###### To install the XPCC build system on Linux (tested on Ubuntu 12.04 LTS):
+###### To install the xpcc build system on Linux (tested on Ubuntu 14.04):
 
 	$ sudo apt-get update
 	$ sudo apt-get install python scons python-jinja2 python-lxml \
 	gcc-avr binutils-avr avr-libc avrdude
 
 
-Further information on installing [the XPCC build system can be found here][xpcc-install].
-
-
 [xpcc]: http://xpcc.kreatives-chaos.com/
-[homebrew]: http://mxcl.github.com/homebrew/
+[homebrew]: http://brew.sh
 [avrlibc]: https://github.com/larsimmisch/homebrew-avr
-[xpcc-install]: http://xpcc.kreatives-chaos.com/install.html
