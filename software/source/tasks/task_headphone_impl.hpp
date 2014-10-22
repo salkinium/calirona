@@ -7,7 +7,6 @@ task::Headphone::Headphone(Leds &leds)
 :	leds(leds), compass(compassData), pingTimer(200),
 	devicePingable(false),
 	deviceId(-1),
-	isEnterCalibrationMode(false), isExitCalibrationMode(false),
 	device(deviceData)
 {
 }
@@ -27,14 +26,14 @@ task::Headphone::run()
 	{
 		if (pingTimer.isExpired())
 		{
-			devicePingable = PT_CALL(device.ping(this));
-			if (devicePingable)
+			if ( (devicePingable = PT_CALL(device.ping(this))) )
 			{
 				if (deviceId == static_cast<uint16_t>(-1))
 				{
-					if (PT_CALL(device.readDeviceId(this, deviceId)))
+					if ( PT_CALL(device.readDeviceId(this, deviceId)) )
 					{
 						leds.resetHeadphoneError();
+						XPCC_LOG_INFO << "DeviceId= " << deviceId << xpcc::endl;
 					}
 					else {
 						deviceId = -1;
@@ -46,16 +45,6 @@ task::Headphone::run()
 				deviceId = -1;
 				leds.setHeadphoneError();
 			}
-		}
-
-		if (isEnterCalibrationMode)
-		{
-			isEnterCalibrationMode = !PT_CALL(device.enterUserCalibrationMode(this));
-		}
-
-		if (isExitCalibrationMode)
-		{
-			isExitCalibrationMode = !PT_CALL(device.exitUserCalibrationMode(this));
 		}
 
 		PT_YIELD();

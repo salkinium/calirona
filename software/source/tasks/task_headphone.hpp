@@ -2,16 +2,19 @@
 #ifndef TASK_HEADPHONE_HPP
 #define TASK_HEADPHONE_HPP
 
-#include <xpcc/processing/protothread.hpp>
-#include <xpcc/processing/periodic_timer.hpp>
+#include <xpcc/processing.hpp>
 #include <xpcc/driver/inertial/hmc6343.hpp>
 #include "../hardware.hpp"
 #include "task_leds.hpp"
+#include <xpcc/debug/logger.hpp>
+
+#undef	XPCC_LOG_LEVEL
+#define	XPCC_LOG_LEVEL xpcc::log::DEBUG
 
 namespace task
 {
 
-class Headphone : private xpcc::pt::Protothread
+class Headphone : private xpcc::pt::Protothread, private xpcc::co::Coroutine
 {
 public:
 	Headphone(Leds &leds);
@@ -29,22 +32,43 @@ public:
 	getDeviceId()
 	{ return deviceId; }
 
-	void ALWAYS_INLINE
+	xpcc::co::Result<bool>
 	enterCalibrationMode()
-	{ isEnterCalibrationMode = true; }
+	{
+		CO_BEGIN(this);
 
-	bool ALWAYS_INLINE
-	isEnterCalibrationModeRunning()
-	{ return isEnterCalibrationMode; }
+		CO_CALL(device.readRegister(this, device.Register16::X_Offset, xOffset));
+		CO_CALL(device.readRegister(this, device.Register16::Y_Offset, yOffset));
+		CO_CALL(device.readRegister(this, device.Register16::Z_Offset, zOffset));
 
-	void ALWAYS_INLINE
+		XPCC_LOG_DEBUG << "Offsets before: x=" << xOffset << " y=" << yOffset << " z=" << zOffset << xpcc::endl;
+
+		if ( CO_CALL(device.enterUserCalibrationMode(this)) )
+			CO_RETURN(true);
+
+		leds.setHeadphoneError();
+		CO_END();
+	}
+
+	xpcc::co::Result<bool>
 	exitCalibrationMode()
-	{ isExitCalibrationMode = true; }
+	{
+		CO_BEGIN(this);
 
-	bool ALWAYS_INLINE
-	isExitCalibrationModeRunning()
-	{ return isExitCalibrationMode; }
+		if ( CO_CALL(device.exitUserCalibrationMode(this)) )
+		{
+			CO_CALL(device.readRegister(this, device.Register16::X_Offset, xOffset));
+			CO_CALL(device.readRegister(this, device.Register16::Y_Offset, yOffset));
+			CO_CALL(device.readRegister(this, device.Register16::Z_Offset, zOffset));
 
+			XPCC_LOG_DEBUG << "Offsets after: x=" << xOffset << " y=" << yOffset << " z=" << zOffset << xpcc::endl;
+
+			CO_RETURN(true);
+		}
+
+		leds.setHeadphoneError();
+		CO_END();
+	}
 
 private:
 	bool
@@ -58,8 +82,9 @@ private:
 	bool devicePingable;
 
 	uint16_t deviceId;
-	bool isEnterCalibrationMode;
-	bool isExitCalibrationMode;
+	uint16_t xOffset;
+	uint16_t yOffset;
+	uint16_t zOffset;
 
 	xpcc::Hmc6343<Twi> device;
 	uint8_t deviceData[21];
