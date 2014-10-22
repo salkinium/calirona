@@ -1,4 +1,4 @@
-env = Environment(tools = ['xpcc'], toolpath = ['../../../xpcc/scons/site_tools'])
+env = Environment(tools = ['xpcc'], toolpath = ['../xpcc/scons/site_tools'])
 
 # find all source files
 files = env.FindFiles(
@@ -35,5 +35,5 @@ env.Alias('build', hexfile)
 env.Alias('build', env.Listing(program))
 
 env.Alias('all', ['build', 'size'])
- 
+
 env.Default('all')
