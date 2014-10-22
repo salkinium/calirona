@@ -52,17 +52,6 @@ MAIN_FUNCTION
 		headphone.update();
 		mechanics.update();
 		manager.update();
-
-		if (buttons.isStopPressedLong())
-		{
-			manager.releaseMotors();
-			XPCC_LOG_INFO << "RELEASE" << xpcc::endl;
-		}
-		else if (buttons.isStopPressedShort())
-		{
-			manager.stopMotors();
-			XPCC_LOG_INFO << "STOP" << xpcc::endl;
-		}
 	}
 
 //	return 0;

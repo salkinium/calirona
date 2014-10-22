@@ -17,6 +17,17 @@ task::Manager::initialize()
 void
 task::Manager::update()
 {
+	if (buttons.isStopPressedLong())
+	{
+		releaseMotors();
+		XPCC_LOG_INFO << "RELEASE" << xpcc::endl;
+	}
+	else if (buttons.isStopPressedShort())
+	{
+		stopMotors();
+		XPCC_LOG_INFO << "STOP" << xpcc::endl;
+	}
+
 	this->run();
 }
 
