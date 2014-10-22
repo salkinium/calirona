@@ -2,14 +2,9 @@
 #ifndef TASK_BUTTONS_HPP
 #define TASK_BUTTONS_HPP
 
-#include <xpcc/processing/protothread.hpp>
 #include <xpcc/processing/periodic_timer.hpp>
 #include <xpcc/ui/button_group.hpp>
-#include <xpcc/debug/logger.hpp>
 #include "hardware.hpp"
-
-#undef	XPCC_LOG_LEVEL
-#define	XPCC_LOG_LEVEL xpcc::log::INFO
 
 namespace task
 {
@@ -36,8 +31,9 @@ public:
 	{
 		if (timerInput.isExpired())
 		{
-			uint8_t mask = (ButtonStart::read() ? BUTTON_START : 0);
-			mask |= (ButtonStop::read() ? BUTTON_STOP : 0);
+			uint8_t mask = 0;
+			if (!ButtonStart::read()) mask |= BUTTON_START;
+			if (!ButtonStop::read())  mask |= BUTTON_STOP;
 			buttons.update(mask);
 		}
 	}
@@ -45,57 +41,32 @@ public:
 	bool ALWAYS_INLINE
 	isX_AxisLimitPressed()
 	{
-		return (!X_Limit1::read());
-		{
-			XPCC_LOG_DEBUG << "X" << xpcc::endl;
-			return true;
-		}
-		return false;
+		return (X_Limit1::read());
 	}
 
 	bool ALWAYS_INLINE
 	isZ_AxisLimitPressed()
 	{
-		return (!Z_Limit1::read());
-		{
-			XPCC_LOG_DEBUG << "Z" << xpcc::endl;
-			return true;
-		}
-		return false;
+		return (Z_Limit1::read());
 	}
 
 	bool ALWAYS_INLINE
 	isStartPressed()
 	{
-		if (buttons.isPressedShort(BUTTON_START) ||
-			buttons.isPressedLong(BUTTON_START))
-		{
-			XPCC_LOG_DEBUG << "Start Button Pressed" << xpcc::endl;
-			return true;
-		}
-		return false;
+		return (buttons.isPressedShort(BUTTON_START) ||
+				buttons.isPressedLong(BUTTON_START));
 	}
 
 	bool ALWAYS_INLINE
 	isStopPressedShort()
 	{
-		if (buttons.isPressedShort(BUTTON_STOP))
-		{
-			XPCC_LOG_DEBUG << "Stop Button Pressed Short" << xpcc::endl;
-			return true;
-		}
-		return false;
+		return buttons.isPressedShort(BUTTON_STOP);
 	}
 
 	bool ALWAYS_INLINE
 	isStopPressedLong()
 	{
-		if (buttons.isPressedLong(BUTTON_STOP))
-		{
-			XPCC_LOG_DEBUG << "Stop Button Pressed Long" << xpcc::endl;
-			return true;
-		}
-		return false;
+		return buttons.isPressedLong(BUTTON_STOP);
 	}
 
 private:

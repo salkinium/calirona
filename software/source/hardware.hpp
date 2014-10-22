@@ -17,14 +17,14 @@ using namespace xpcc::atmega;
 //      (!RESET) PC6  1|   |28  PC5 (SCL)
 //         (RXD) PD0  2|   |27  PC4 (SDA)
 //         (TXD) PD1  3|   |26  PC3 (!HEADPHONE)
-//    (X_LIMIT1) PD2  4|   |25  PC2 (!MECH_ERROR)
-//    (X_LIMIT2) PD3  5|   |24  PC1 (!BUSY2)
-//    (Z_LIMIT1) PD4  6|   |23  PC0 (!BUSY1)
+//   (!X_LIMIT1) PD2  4|   |25  PC2 (!MECH_ERROR)
+//   (!X_LIMIT2) PD3  5|   |24  PC1 (!BUSY2)
+//   (!Z_LIMIT1) PD4  6|   |23  PC0 (!BUSY1)
 //               VCC  7|   |22  GND
 //               GND  8|   |21  AREF
 //       (XTAL1) PB6  9|   |20  AVCC
 //       (XTAL2) PB7 10|   |19  PB5 (SCK)
-//    (Z_LIMIT2) PD5 11|   |18  PB4 (!START/MISO)
+//   (!Z_LIMIT2) PD5 11|   |18  PB4 (!START/MISO)
 // (Z_STEP/OC0A) PD6 12|   |17  PB3 (!STOP/MOSI)
 //     (!ENABLE) PD7 13|   |16  PB2 (Z_DIR)
 //       (X_DIR) PB0 14|   |15  PB1 (X_STEP/OC1A)
@@ -37,18 +37,17 @@ uint16_t t0_steps;
 uint16_t t1_steps;
 
 // Motors
-//typedef xpcc::GpioInverted< GpioOpenDrainWithPullUp< GpioD7 > > XZ_Enable;
-typedef xpcc::GpioInverted< GpioD7 > XZ_Enable;
+typedef xpcc::GpioInverted< GpioOpenDrain< GpioD7 > > XZ_Enable;
 
 // X-Axis
-typedef GpioInputD2 X_Limit1;
-typedef GpioInputD3 X_Limit2;
+typedef xpcc::GpioInverted< GpioInputD2 > X_Limit1;
+typedef xpcc::GpioInverted< GpioInputD3 > X_Limit2;
 typedef GpioOutputB0 X_Dir;
 typedef GpioOutputB1 X_Step;
 
 // Z-Axis
-typedef GpioInputD4 Z_Limit1;
-typedef GpioInputD5 Z_Limit2;
+typedef xpcc::GpioInverted< GpioInputD4 > Z_Limit1;
+typedef xpcc::GpioInverted< GpioInputD5 > Z_Limit2;
 typedef GpioOutputB2 Z_Dir;
 typedef GpioOutputD6 Z_Step;
 
@@ -59,8 +58,8 @@ typedef xpcc::GpioInverted< GpioOutputC2 > LED_Headphone;
 typedef xpcc::GpioInverted< GpioOutputC3 > LED_MechError;
 
 // Buttons
-typedef GpioInputB4 ButtonStart;
-typedef GpioInputB3 ButtonStop;
+typedef xpcc::GpioInverted< GpioInputB4 > ButtonStart;
+typedef xpcc::GpioInverted< GpioInputB3 > ButtonStop;
 
 // COMMUNICATION ##############################################################
 typedef GpioC4 Sda;
@@ -108,7 +107,5 @@ task::Mechanics mechanics(leds, buttons);
 
 #include "tasks/task_manager.hpp"
 task::Manager manager(buttons, headphone, mechanics);
-
-
 
 #endif // CALIRONA_HARDWARE
