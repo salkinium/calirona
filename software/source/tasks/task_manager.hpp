@@ -20,6 +20,7 @@ public:
 	void
 	update();
 
+private:
 	void
 	stopMotors()
 	{
@@ -36,7 +37,6 @@ public:
 		buttons.isStartPressed();
 	}
 
-private:
 	bool
 	run();
 

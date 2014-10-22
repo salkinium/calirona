@@ -87,7 +87,7 @@ xpcc::log::StyleWrapper< xpcc::log::Prefix< char[10] > > loggerDeviceWarning (
 xpcc::log::Logger xpcc::log::warning( loggerDeviceWarning );
 
 xpcc::log::StyleWrapper< xpcc::log::Prefix< char[10] > > loggerDeviceError (
-		xpcc::log::Prefix< char[10] > ("Error    ", outputDevice ) );
+		xpcc::log::Prefix< char[10] > ("Error:   ", outputDevice ) );
 xpcc::log::Logger xpcc::log::error( loggerDeviceError );
 
 #undef	XPCC_LOG_LEVEL

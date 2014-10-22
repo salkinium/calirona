@@ -32,9 +32,7 @@ public:
 
 	bool ALWAYS_INLINE
 	isCalibrated()
-	{
-		return isCalibratedX && isCalibratedZ;
-	}
+	{ return isCalibratedX && isCalibratedZ; }
 
 	xpcc::co::Result<bool>
 	rotateForward(void *ctx);
@@ -55,6 +53,7 @@ private:
 	bool
 	run();
 
+private:
 	Leds &leds;
 	Buttons &buttons;
 	xpcc::Timeout<> timeout;
