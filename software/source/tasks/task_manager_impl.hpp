@@ -31,29 +31,50 @@ task::Manager::run()
 		{
 			if (!mechanics.isCalibrated())
 			{
-				XPCC_LOG_INFO << "Calibrating X- and Z-axis" << xpcc::endl;
-				if (!PT_CALL(mechanics.calibrateX(this)))
-				{
-					XPCC_LOG_ERROR << "Unable to calibrate X-axis" << xpcc::endl;
+				XPCC_LOG_INFO << "Calibrating X- and Z-axis...";
+				if (!PT_CALL(mechanics.calibrateX(this))) {
+					XPCC_LOG_ERROR << "Unable to calibrate X-axis!" << xpcc::endl;
 				}
-				else if (!PT_CALL(mechanics.calibrateZ(this)))
+				else if (!PT_CALL(mechanics.calibrateZ(this))) {
+					XPCC_LOG_ERROR << "Unable to calibrate Z-axis!" << xpcc::endl;
+				}
+				else XPCC_LOG_INFO << " done." << xpcc::endl;
+			}
+			else if (headphone.isAvailable())
+			{
+				XPCC_LOG_INFO << "Entering user calibration mode...";
+				if ( !PT_CALL(headphone.enterCalibrationMode()) ) {
+					XPCC_LOG_ERROR << "Unable to enter user calibration mode!" << xpcc::endl;
+				}
+				else
 				{
-					XPCC_LOG_ERROR << "Unable to calibrate Z-axis" << xpcc::endl;
+					XPCC_LOG_INFO << " done." << xpcc::endl << "Rotating forward...";
+					if (!PT_CALL(mechanics.rotateForward(this))) {
+						XPCC_LOG_ERROR << "Unable to rotate forward!" << xpcc::endl;
+					}
+					else
+					{
+						XPCC_LOG_INFO << " done." << xpcc::endl << "Exiting user calibration mode...";
+						if ( !PT_CALL(headphone.exitCalibrationMode()) ) {
+							XPCC_LOG_ERROR << "Unable to exit user calibration mode!" << xpcc::endl;
+						}
+						else
+						{
+							XPCC_LOG_INFO << " done." << xpcc::endl << "Rotating backward...";
+							if ( !PT_CALL(mechanics.rotateBackward(this)) ) {
+								XPCC_LOG_ERROR << "Unable to rotate backward!" << xpcc::endl;
+							}
+							else  XPCC_LOG_INFO << " done." << xpcc::endl;
+						}
+
+
+
+
+					}
 				}
 			}
 			else {
-				XPCC_LOG_INFO << "Rotating forward..." << xpcc::endl;
-				if(!PT_CALL(mechanics.rotateForward(this)))
-				{
-					XPCC_LOG_ERROR << "Unable to rotate forward" << xpcc::endl;
-				}
-				else {
-					XPCC_LOG_INFO << "Rotating backward..." << xpcc::endl;
-					if(!PT_CALL(mechanics.rotateBackward(this)))
-					{
-						XPCC_LOG_ERROR << "Unable to rotate backward" << xpcc::endl;
-					}
-				}
+				XPCC_LOG_ERROR << "Headphones unavailable!" << xpcc::endl;
 			}
 		}
 
