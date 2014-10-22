@@ -37,6 +37,10 @@ public:
 	{
 		CO_BEGIN(this);
 
+		CO_CALL(device.readRegister(this, device.Register::FilterLsb, filter));
+		XPCC_LOG_DEBUG << "IIR Filter= " << filter << xpcc::endl;
+		CO_CALL(device.setIIR_Filter(this, 5));
+
 		CO_CALL(device.readRegister(this, device.Register16::X_Offset, xOffset));
 		CO_CALL(device.readRegister(this, device.Register16::Y_Offset, yOffset));
 		CO_CALL(device.readRegister(this, device.Register16::Z_Offset, zOffset));
@@ -85,6 +89,7 @@ private:
 	uint16_t xOffset;
 	uint16_t yOffset;
 	uint16_t zOffset;
+	uint8_t filter;
 
 	xpcc::Hmc6343<Twi> device;
 	uint8_t deviceData[21];
