@@ -43,10 +43,10 @@ task::Manager::run()
 			if (!mechanics.isCalibrated())
 			{
 				XPCC_LOG_INFO << "Calibrating X- and Z-axis...";
-				if (!PT_CALL(mechanics.calibrateX(this))) {
+				if ( !PT_CALL(mechanics.calibrateX(this)) ) {
 					XPCC_LOG_ERROR << "Unable to calibrate X-axis!" << xpcc::endl;
 				}
-				else if (!PT_CALL(mechanics.calibrateZ(this))) {
+				else if ( !PT_CALL(mechanics.calibrateZ(this)) ) {
 					XPCC_LOG_ERROR << "Unable to calibrate Z-axis!" << xpcc::endl;
 				}
 				else XPCC_LOG_INFO << " done." << xpcc::endl;
@@ -60,7 +60,7 @@ task::Manager::run()
 				else
 				{
 					XPCC_LOG_INFO << " done." << xpcc::endl << "Rotating forward...";
-					if (!PT_CALL(mechanics.rotateForward(this))) {
+					if ( !PT_CALL(mechanics.rotateForward(this)) ) {
 						XPCC_LOG_ERROR << "Unable to rotate forward!" << xpcc::endl;
 					}
 					else
@@ -77,10 +77,6 @@ task::Manager::run()
 							}
 							else  XPCC_LOG_INFO << " done." << xpcc::endl;
 						}
-
-
-
-
 					}
 				}
 			}
