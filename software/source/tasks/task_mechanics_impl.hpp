@@ -63,9 +63,7 @@ task::Mechanics::calibrateX(void *ctx)
 
 	leds.setMechanicalError();
 	leds.resetBusy();
-	CO_RETURN(false);
-
-	CO_END();
+	CO_END_RETURN(false);
 }
 
 xpcc::co::Result<bool>
@@ -98,9 +96,7 @@ task::Mechanics::calibrateZ(void *ctx)
 
 	leds.setMechanicalError();
 	leds.resetBusy();
-	CO_RETURN(false);
-
-	CO_END();
+	CO_END_RETURN(false);
 }
 
 xpcc::co::Result<bool>
@@ -122,9 +118,7 @@ task::Mechanics::rotateForward(void *ctx)
 	leds.resetBusy();
 	isCalibratedX = false;
 	isCalibratedZ = false;
-	CO_RETURN(true);
-
-	CO_END();
+	CO_END_RETURN(true);
 }
 
 xpcc::co::Result<bool>
@@ -140,9 +134,7 @@ task::Mechanics::rotateBackward(void *ctx)
 	CO_WAIT_WHILE(xMotor.isRunning());
 
 	releaseMotors();
-	CO_RETURN(true);
-
-	CO_END();
+	CO_END_RETURN(true);
 }
 
 void

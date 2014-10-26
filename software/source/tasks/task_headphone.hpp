@@ -45,7 +45,7 @@ private:
 private:
 	Leds &leds;
 
-	uint8_t compassData[21];
+	xpcc::hmc6343::Data compassData;
 	xpcc::Hmc6343<Twi> compass;
 
 	xpcc::PeriodicTimer<> pingTimer;

@@ -29,7 +29,7 @@ task::Headphone::enterCalibrationMode()
 		CO_RETURN(true);
 
 	leds.setHeadphoneError();
-	CO_END();
+	CO_END_RETURN(false);
 }
 
 xpcc::co::Result<bool>
@@ -49,7 +49,7 @@ task::Headphone::exitCalibrationMode()
 	}
 
 	leds.setHeadphoneError();
-	CO_END();
+	CO_END_RETURN(false);
 }
 
 void
