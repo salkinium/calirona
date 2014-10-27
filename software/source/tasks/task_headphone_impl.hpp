@@ -39,6 +39,7 @@ task::Headphone::exitCalibrationMode()
 
 	if ( CO_CALL(compass.exitUserCalibrationMode(this)) )
 	{
+		xOffset = yOffset = zOffset = -1;
 		CO_CALL(compass.readRegister(this, compass.Register16::X_Offset, xOffset));
 		CO_CALL(compass.readRegister(this, compass.Register16::Y_Offset, yOffset));
 		CO_CALL(compass.readRegister(this, compass.Register16::Z_Offset, zOffset));

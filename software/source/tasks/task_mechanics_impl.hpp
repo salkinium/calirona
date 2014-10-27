@@ -63,6 +63,7 @@ task::Mechanics::calibrateX(void *ctx)
 
 	leds.setMechanicalError();
 	leds.resetBusy();
+	releaseMotors();
 	CO_END_RETURN(false);
 }
 
@@ -96,6 +97,7 @@ task::Mechanics::calibrateZ(void *ctx)
 
 	leds.setMechanicalError();
 	leds.resetBusy();
+	releaseMotors();
 	CO_END_RETURN(false);
 }
 
