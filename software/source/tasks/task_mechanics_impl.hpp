@@ -7,7 +7,7 @@
 task::Mechanics::Mechanics(Leds &leds, Buttons &buttons)
 :	leds(leds), buttons(buttons),
 	isCalibratedX(false), isCalibratedZ(false),
-	correctionX(-40), correctionZ(15),
+	correctionX(70), correctionZ(15),
 	xMotor(&OCR1AL, &TCCR1B, t1_steps), zMotor(&OCR0A, &TCCR0B, t0_steps),
 	motorTimeout(30000)
 {
@@ -43,12 +43,12 @@ task::Mechanics::calibrateX(void *ctx)
 
 	if (buttons.isX_AxisLimitPressed())
 	{
-		xMotor.rotateBy(100, 500);
+		xMotor.rotateBy(-100, 500);
 		CO_WAIT_WHILE(xMotor.isRunning());
 	}
 
-	xMotor.setSpeed(-200);
-	timeout.restart(2000);
+	xMotor.setSpeed(200);
+	timeout.restart(3000);
 	CO_WAIT_UNTIL(buttons.isX_AxisLimitPressed() || timeout.isExpired());
 	xMotor.stop();
 
@@ -111,7 +111,7 @@ task::Mechanics::rotateForward(void *ctx)
 
 	startMotors();
 
-	xMotor.rotateBy(3600, 10000);
+	xMotor.rotateBy(-3600, 10000);
 	CO_WAIT_WHILE(xMotor.isRunning());
 
 	zMotor.rotateBy(3600, 10000);
@@ -132,7 +132,7 @@ task::Mechanics::rotateBackward(void *ctx)
 	zMotor.rotateBy(-3600, 5000);
 	CO_WAIT_WHILE(zMotor.isRunning());
 
-	xMotor.rotateBy(-3600, 5000);
+	xMotor.rotateBy(3600, 5000);
 	CO_WAIT_WHILE(xMotor.isRunning());
 
 	releaseMotors();
