@@ -33,9 +33,9 @@ The mapping is as follows:
 The basic usage of the robots is as follows:
 
 1. Plug in the power cord. The green power led should light up and the headphone error led should blink.
-2. Place the headphone into the holder and plug in the headphone jack into it. The headphone error led should stop blinking and turn on fully, unless the headphone is broken.
+2. Place the headphone into the holder drum and plug in the headphone jack. The headphone error led should stop blinking and turn on fully, unless the headphone is broken.
 3. Press START. The robot will initialize its axes.
-4. Press START again. The robot will do two rotations while calibrating the heaphones.
+4. Press START again. The robot will do two rotations while calibrating the headphones.
 5. Once the robot stopped moving, unplug the now calibrated headphones and remove them.
 
 If the robot detected an invalid state during any of the actions, it will stop moving and blink an error led.
