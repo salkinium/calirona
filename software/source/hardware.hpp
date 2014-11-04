@@ -106,6 +106,6 @@ task::Headphone headphone(leds);
 task::Mechanics mechanics(leds, buttons);
 
 #include "tasks/task_manager.hpp"
-task::Manager manager(buttons, headphone, mechanics);
+task::Manager manager(buttons, leds, headphone, mechanics);
 
 #endif // CALIRONA_HARDWARE

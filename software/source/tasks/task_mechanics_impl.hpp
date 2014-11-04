@@ -48,13 +48,13 @@ task::Mechanics::calibrateX(void *ctx)
 	}
 
 	xMotor.setSpeed(200);
-	timeout.restart(3000);
+	timeout.restart(2500);
 	CO_WAIT_UNTIL(buttons.isX_AxisLimitPressed() || timeout.isExpired());
 	xMotor.stop();
 
 	if ( (isCalibratedX = !timeout.isExpired()) )
 	{
-		xMotor.rotateBy(correctionX, 200);
+		xMotor.rotateBy(correctionX, 400);
 		CO_WAIT_WHILE(xMotor.isRunning());
 		leds.resetMechanicalError();
 		leds.resetBusy();
@@ -163,7 +163,6 @@ task::Mechanics::releaseMotors()
 {
 	stopMotors();
 	XZ_Enable::reset();
-	leds.resetMechanicalError();
 }
 
 void

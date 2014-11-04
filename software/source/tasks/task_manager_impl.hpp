@@ -3,8 +3,8 @@
 #	error	"Don't include this file directly, use 'task_manager.hpp' instead!"
 #endif
 
-task::Manager::Manager(Buttons &buttons, Headphone &headphone, Mechanics &mechanics)
-:	buttons(buttons), headphone(headphone), mechanics(mechanics)
+task::Manager::Manager(Buttons &buttons, Leds &leds, Headphone &headphone, Mechanics &mechanics)
+:	buttons(buttons), leds(leds), headphone(headphone), mechanics(mechanics)
 {
 }
 
@@ -20,6 +20,7 @@ task::Manager::update()
 	if (buttons.isStopPressedLong())
 	{
 		releaseMotors();
+		leds.resetMechanicalError();
 		XPCC_LOG_INFO << "RELEASE" << xpcc::endl;
 	}
 	else if (buttons.isStopPressedShort())

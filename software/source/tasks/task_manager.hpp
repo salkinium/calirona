@@ -12,7 +12,7 @@ namespace task
 class Manager : private xpcc::pt::Protothread
 {
 public:
-	Manager(Buttons &buttons, Headphone &headphone, Mechanics &mechanics);
+	Manager(Buttons &buttons, Leds &leds, Headphone &headphone, Mechanics &mechanics);
 
 	void
 	initialize();
@@ -41,6 +41,7 @@ private:
 	run();
 
 	Buttons &buttons;
+	Leds &leds;
 	Headphone &headphone;
 	Mechanics &mechanics;
 
