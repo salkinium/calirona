@@ -36,9 +36,9 @@ task::Mechanics::initialize()
 }
 
 xpcc::co::Result<bool>
-task::Mechanics::calibrateX(void *ctx)
+task::Mechanics::calibrateX()
 {
-	CO_BEGIN(ctx);
+	CO_BEGIN();
 	startMotors();
 
 	if (buttons.isX_AxisLimitPressed())
@@ -68,9 +68,9 @@ task::Mechanics::calibrateX(void *ctx)
 }
 
 xpcc::co::Result<bool>
-task::Mechanics::calibrateZ(void *ctx)
+task::Mechanics::calibrateZ()
 {
-	CO_BEGIN(ctx);
+	CO_BEGIN();
 	startMotors();
 
 	zMotor.stop();
@@ -102,9 +102,9 @@ task::Mechanics::calibrateZ(void *ctx)
 }
 
 xpcc::co::Result<bool>
-task::Mechanics::rotateForward(void *ctx)
+task::Mechanics::rotateForward()
 {
-	CO_BEGIN(ctx);
+	CO_BEGIN();
 
 	if (!isCalibrated())
 		CO_RETURN(false);
@@ -124,9 +124,9 @@ task::Mechanics::rotateForward(void *ctx)
 }
 
 xpcc::co::Result<bool>
-task::Mechanics::rotateBackward(void *ctx)
+task::Mechanics::rotateBackward()
 {
-	CO_BEGIN(ctx);
+	CO_BEGIN();
 	startMotors();
 
 	zMotor.rotateBy(-3600, 5000);

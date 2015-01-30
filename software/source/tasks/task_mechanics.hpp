@@ -13,7 +13,7 @@
 namespace task
 {
 
-class Mechanics : private xpcc::pt::Protothread, public xpcc::co::Coroutine
+class Mechanics : private xpcc::pt::Protothread, public xpcc::co::NestedCoroutine<>
 {
 public:
 	Mechanics(Leds &leds, Buttons &buttons);
@@ -25,20 +25,20 @@ public:
 	update();
 
 	xpcc::co::Result<bool>
-	calibrateX(void *ctx);
+	calibrateX();
 
 	xpcc::co::Result<bool>
-	calibrateZ(void *ctx);
+	calibrateZ();
 
 	bool ALWAYS_INLINE
 	isCalibrated()
 	{ return isCalibratedX && isCalibratedZ; }
 
 	xpcc::co::Result<bool>
-	rotateForward(void *ctx);
+	rotateForward();
 
 	xpcc::co::Result<bool>
-	rotateBackward(void *ctx);
+	rotateBackward();
 
 	void
 	stopMotors();

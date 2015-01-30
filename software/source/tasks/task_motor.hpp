@@ -29,8 +29,8 @@ template< typename Direction, typename Step, uint16_t MotorSteps >
 class Motor
 {
 public:
-	Motor(volatile uint8_t *compare, volatile uint8_t *prescalar, uint16_t &steps)
-	:	mode(MODE_OFF), compare(compare), prescalar(prescalar), steps(steps)
+	Motor(volatile uint8_t *compare, volatile uint8_t *prescaler, uint16_t &steps)
+	:	mode(MODE_OFF), compare(compare), prescaler(prescaler), steps(steps)
 	{
 		stopTimer();
 		steps = 0;
@@ -71,7 +71,7 @@ private:
 	void inline
 	stopTimer()
 	{
-		*prescalar &= ~0b111;
+		*prescaler &= ~0b111;
 	}
 
 	void inline
@@ -79,9 +79,9 @@ private:
 	{
 		// Prescaler 1024
 		// horrible hack, just horrible.
-		if (prescalar == &TCCR0B) TCNT0 = 0;
+		if (prescaler == &TCCR0B) TCNT0 = 0;
 		else TCNT1 = 0;
-		*prescalar |= 0b101;
+		*prescaler |= 0b101;
 	}
 
 	void inline
@@ -102,7 +102,7 @@ private:
 	uint16_t required_steps;
 
 	volatile uint8_t *compare;
-	volatile uint8_t *prescalar;
+	volatile uint8_t *prescaler;
 	uint16_t &steps;
 };
 

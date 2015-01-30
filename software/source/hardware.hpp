@@ -69,7 +69,7 @@ typedef I2cMaster Twi;
 // SERIAL DEBUG ###############################################################
 #include <xpcc/io/iodevice_wrapper.hpp>
 typedef Uart0 Uart;
-xpcc::IODeviceWrapper<Uart> outputDevice;
+xpcc::IODeviceWrapper< Uart, xpcc::IOBuffer::BlockIfFull > outputDevice;
 
 #include <xpcc/debug/logger/style_wrapper.hpp>
 #include <xpcc/debug/logger/style/prefix.hpp>

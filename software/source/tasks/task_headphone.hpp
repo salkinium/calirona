@@ -14,7 +14,7 @@
 namespace task
 {
 
-class Headphone : private xpcc::pt::Protothread, private xpcc::co::Coroutine
+class Headphone : private xpcc::pt::Protothread, private xpcc::co::NestedCoroutine<>
 {
 public:
 	Headphone(Leds &leds);
