@@ -29,13 +29,16 @@ xpcc is provided as a git submodule, to use it run this in the root `corona/` di
 ###### To install the xpcc build system on OS X (tested on Mavericks):
 
 1.	Install [Homebrew][]:
-	`$ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
+		
+		$ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 2.	Install some dependencies:
-	`$ brew install scons python`
-	`$ pip install lxml jinja2`
+	
+		$ brew install scons python
+		$ pip install lxml jinja2
 3.	Install the latest version of [avr-libc][avrlibc] and avrdude using Homebrew:
-	`$ brew tap larsimmisch/avr`
-	`$ brew install avr-libc avrdude`
+		
+		$ brew tap larsimmisch/avr
+		$ brew install avr-libc avrdude
 
 
 ###### To install the xpcc build system on Linux (tested on Ubuntu 14.04):
